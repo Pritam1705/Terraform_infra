@@ -39,6 +39,8 @@ module "networking" {
   HTTP_port = var.HTTP_port
   allow_port = var.allow_port
   sg_cidr_range = var.sg_cidr_range
+  prometheus_port = var.prometheus_port
+  exporter_port = var.exporter_port
 }
 
 
