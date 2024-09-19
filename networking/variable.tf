@@ -200,3 +200,12 @@ variable "sg_cidr_range" {
   type = string
   default = "0.0.0.0/0"
 }
+variable "prometheus_port" {
+  type = string
+  default = "9090"
+}
+
+variable "exporter_port" {
+  type = string
+  default = "9100"
+}
