@@ -192,6 +192,31 @@ resource "aws_security_group" "SG_02" {
     cidr_blocks = [var.sg_cidr_range]
   }
   ingress  {
+    from_port   = var.prometheus_port
+    to_port     = var.prometheus_port
+    protocol    = var.protocol_tcp
+    cidr_blocks = [var.sg_cidr_range]
+  }
+  egress  {
+    from_port   = var.allow_port
+    to_port     = var.allow_port
+    protocol    = var.protocol_01
+    cidr_blocks = [var.sg_cidr_range]
+  }
+
+   ingress  {
+    from_port   = var.exporter_port
+    to_port     = var.exporter_port
+    protocol    = var.protocol_tcp
+    cidr_blocks = [var.sg_cidr_range]
+  }
+  egress  {
+    from_port   = var.allow_port
+    to_port     = var.allow_port
+    protocol    = var.protocol_01
+    cidr_blocks = [var.sg_cidr_range]
+  }
+  ingress  {
     from_port   = var.ssh_port
     to_port     = var.ssh_port
     protocol    = var.protocol_tcp
