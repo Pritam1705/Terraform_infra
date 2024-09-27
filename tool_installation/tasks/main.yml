@@ -1,0 +1,85 @@
+---
+- name: apt-key add
+  apt_key:
+    url: "{{ key }}"
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: clone apt repository
+  apt_repository:
+    repo: "{{ repo }}"
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: install grafana in ubuntu
+  apt:
+    update_cache: true
+    name: grafana
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: clone yum repository
+  yum_repository:
+    name: grafana
+    baseurl: "{{ baseurl }}"
+    repo_gpgcheck: yes
+    enabled: yes
+    gpgcheck: yes
+    gpgkey: "{{ gpgkey }}"
+    sslverify: yes
+    sslcacert: /etc/pki/tls/certs/ca-bundle.crt
+  when: ansible_os_family == "RedHat"
+ 
+- name: install grafana in centos
+  yum:
+    name: grafana
+    state: present
+  when: ansible_os_family == "RedHat"
+ 
+- name: generating cfg file
+  template:
+    src: myconfig.j2
+    dest: /etc/grafana/grafana.ini
+  notify: restart grafana
+  when: ansible_os_family in ["Debian", "RedHat"] 
+
+- name: install binary
+  ansible.builtin.get_url:
+    url: https://github.com/prometheus/prometheus/releases/download/v2.54.0/prometheus-2.54.0.linux-amd64.tar.gz
+    dest: /home/ubuntu
+    mode: '644'
+
+- name: untar binary file
+  ansible.builtin.unarchive:
+    src: "prometheus-2.54.0.linux-amd64.tar.gz"
+    dest: /home/ubuntu
+    remote_src: yes  
+
+- name: Change directory 
+  ansible.builtin.command:
+    cmd: "pwd"
+  args:
+    chdir: "/home/ubuntu/prometheus-2.54.0.linux-amd64"
+
+
+- name: run script
+  ansible.builtin.shell: "./prometheus --config.file=prometheus.yml"
+  args:
+    chdir: "/home/ubuntu/prometheus-2.54.0.linux-amd64"
+
+- name: install binary
+  ansible.builtin.get_url:
+    url: https://github.com/prometheus/node_exporter/releases/download/v1.8.2/node_exporter-1.8.2.linux-amd64.tar.gz
+    dest: /home/ubuntu
+    mode: '644'
+
+- name: untar binary file
+  ansible.builtin.unarchive:
+    src: "node_exporter-1.8.2.linux-amd64.tar.gz"
+    dest: /home/ubuntu
+    remote_src: yes
+
+- name: run script
+  ansible.builtin.shell: "./node_exporter"
+  args:
+    chdir: "/home/ubuntu/node_exporter-1.8.2.linux-amd64/"
