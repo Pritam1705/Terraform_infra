@@ -251,7 +251,7 @@ variable "path" {
 # register target variable
 variable "port_num" {
   type = string
-  default = "3000"
+  default     = [3000, 9090, 9100]
 }
 
 # ALB variable
