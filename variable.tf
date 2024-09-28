@@ -157,6 +157,7 @@ variable "sg_cidr_range" {
   type = string
   default = "0.0.0.0/0"
 }
+
 variable "prometheus_port" {
   type = string
   default = "9090"
@@ -183,7 +184,7 @@ variable "instance_type" {
 
 variable "key_name" {
   type = string
-  default = "ansible-key"
+  default = "ansible-pritam"
 }
 
 variable "instance_name" {
@@ -268,4 +269,26 @@ variable "alb_name" {
 variable "internal_value" {
   type = bool
   default = false
+}
+
+# vpc peering variables
+
+variable "requester_CIDR" {
+  type = string
+  default = "172.31.0.0/16 "
+}
+
+variable "accepter_CIDR" {
+  type = string
+  default = "10.0.0.0/17"
+}
+
+variable "region" {
+  type = string
+  default = "us-west-1"
+}
+
+variable "vpc_peering_name" {
+  type = string
+  default = "Vpc-peering"
 }
