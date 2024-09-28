@@ -249,7 +249,7 @@ variable "path" {
 
 
 # register target variable
-variable "port_num" {
+variable "port_nums" {
   type        = list(number)
   default     = [3000, 9090, 9100]
 }
