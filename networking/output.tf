@@ -59,3 +59,18 @@ output "sg01_id" {
 output "sg02_id" {
   value = aws_security_group.SG_02.id
 }
+
+
+# vpc peering id
+
+output "vpc_peering_connection_id" {
+  value = aws_vpc_peering_connection.vpc_peering.id
+}
+
+output "vpc_id-01" {
+  value = data.aws_vpc.default_vpc.id
+}
+
+output "default-sg" {
+  value = data.aws_security_group.default-sg.id
+}
