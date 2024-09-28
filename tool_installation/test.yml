@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: aws_ec2
   become: true
   roles:
     - tool_installation
