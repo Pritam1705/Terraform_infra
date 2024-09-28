@@ -14,3 +14,4 @@ strict: False
 # Optional: cache the inventory for better performance
 cache: True
 cache_timeout: 600  # seconds
+ansible_ssh_common_args: '-o ConnectTimeout=60'
