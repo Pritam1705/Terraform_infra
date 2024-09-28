@@ -14,6 +14,11 @@ variable "vpc_name" {
   default = "Tool_vpc"
 }
 
+variable "default_vpc-cidr-range" {
+  type = string
+  default = "172.31.0.0/16"
+}
+
 # subnet variable
 
 variable "vpc_id" {
@@ -183,7 +188,7 @@ variable "protocol_01" {
 
 variable "grafana_port" {
   type = string
-  default = "3000"
+  default = "2000"
 }
 
 variable "allow_port" {
@@ -200,6 +205,7 @@ variable "sg_cidr_range" {
   type = string
   default = "0.0.0.0/0"
 }
+
 variable "prometheus_port" {
   type = string
   default = "9090"
@@ -208,4 +214,26 @@ variable "prometheus_port" {
 variable "exporter_port" {
   type = string
   default = "9100"
+}
+
+# vpc peering variables
+
+variable "requester_CIDR" {
+  type = string
+  default = "172.31.0.0/16 "
+}
+
+variable "accepter_CIDR" {
+  type = string
+  default = "10.0.0.0/17"
+}
+
+variable "region" {
+  type = string
+  default = "us-west-1"
+}
+
+variable "vpc_peering_name" {
+  type = string
+  default = "Vpc-peering"
 }
