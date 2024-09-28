@@ -70,7 +70,7 @@ module "compute" {
   healthy_threshold = var.healthy_threshold
   unhealthy_threshold = var.unhealthy_threshold
   path = var.path
-  port_num = var.port_num
+  port_num = var.port_nums[0]
   Target_group_arn = module.compute.Target_group_arn
   private01_vm_id = module.compute.private01_vm_id
   ALB_type = var.ALB_type
