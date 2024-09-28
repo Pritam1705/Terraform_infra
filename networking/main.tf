@@ -1,5 +1,31 @@
-# vpc creation
+data "aws_vpc" "default_vpc" {
+  default = true
+}
 
+
+data "aws_route_table" "default-rt" {
+ vpc_id = data.aws_vpc.default_vpc.id  
+ filter {
+    name   = "association.main"
+    values = ["true"]
+  }
+}
+
+
+resource "aws_route_table" "route-table" {
+  vpc_id = data.aws_vpc.default_vpc.id
+  
+}
+
+resource "aws_route" "default-rt" {
+  route_table_id = data.aws_route_table.default-rt.id
+  destination_cidr_block = var.cidr_range
+  vpc_peering_connection_id = aws_vpc_peering_connection.vpc_peering.id
+}
+
+
+
+# vpc creation
 resource "aws_vpc" "vpc_test" {
   cidr_block = var.cidr_range
   instance_tenancy = var.instance_tenancy
@@ -52,7 +78,7 @@ vpc_id     = var.vpc_id
 # creation of private subnet02
 
 resource "aws_subnet" "private02" {
-vpc_id     = var.vpc_id
+  vpc_id     = var.vpc_id
   cidr_block = var.subnet4cidr
   availability_zone = var.availability_zone_02
 
@@ -101,12 +127,20 @@ resource "aws_route_table" "Route01" {
   route  {
   cidr_block = var.nat_cidr_range
   gateway_id = var.IG_id
+  
  }
  
   tags = {
     Name = var.rt01_name
   }
 }
+
+resource "aws_route" "route-table-id-01" {
+  route_table_id = aws_route_table.Route01.id
+  destination_cidr_block = var.default_vpc-cidr-range
+  vpc_peering_connection_id = aws_vpc_peering_connection.vpc_peering.id
+}
+
 
 # creation of private RT
 resource "aws_route_table" "Route02" {
@@ -119,6 +153,12 @@ resource "aws_route_table" "Route02" {
   tags = {
     Name = var.rt02_name
   }
+}
+
+resource "aws_route" "route-table-id-02" {
+  route_table_id = aws_route_table.Route02.id
+  destination_cidr_block = var.default_vpc-cidr-range
+  vpc_peering_connection_id = aws_vpc_peering_connection.vpc_peering.id
 }
 
 # subnet association
@@ -175,10 +215,19 @@ resource "aws_security_group" "SG_01" {
   }
 }
 
+data "aws_security_group" "default-sg" {
+  vpc_id = data.aws_vpc.default_vpc.id
+  filter {
+    name   = "group-name"
+    values = ["default"]
+  }
+}
+
+
 # security group for private
 resource "aws_security_group" "SG_02" {
   
-  vpc_id      = var.vpc_id
+  vpc_id      = var.vpc_id 
   ingress  {
     from_port   = var.grafana_port
     to_port     = var.grafana_port
@@ -191,7 +240,7 @@ resource "aws_security_group" "SG_02" {
     protocol    = var.protocol_01
     cidr_blocks = [var.sg_cidr_range]
   }
-  ingress  {
+   ingress  {
     from_port   = var.prometheus_port
     to_port     = var.prometheus_port
     protocol    = var.protocol_tcp
@@ -216,6 +265,8 @@ resource "aws_security_group" "SG_02" {
     protocol    = var.protocol_01
     cidr_blocks = [var.sg_cidr_range]
   }
+   
+
   ingress  {
     from_port   = var.ssh_port
     to_port     = var.ssh_port
@@ -241,8 +292,38 @@ resource "aws_security_group" "SG_02" {
     protocol    = var.protocol_01
     cidr_blocks = [var.sg_cidr_range]
   }
+  ingress {
+    from_port   = -1                # ICMP allows -1 for all types
+    to_port     = -1                # ICMP allows -1 for all codes
+    protocol    = "icmp"
+    cidr_blocks = []
+    security_groups = [data.aws_security_group.default-sg.id] # Allow traffic from the default SG
+    ipv6_cidr_blocks = []
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   tags = {
     Name = var.private_sg02_name
   }
 }
+
+resource "aws_vpc_peering_connection" "vpc_peering" {
+  vpc_id        = data.aws_vpc.default_vpc.id
+  peer_vpc_id   = var.vpc_id
+  peer_region   = var.region
+
+  tags = {
+    Name = var.vpc_peering_name
+  }
+}
+
+resource "aws_vpc_peering_connection_accepter" "accepter" {
+  vpc_peering_connection_id = aws_vpc_peering_connection.vpc_peering.id
+  auto_accept               = true
+}
+
