@@ -1,0 +1,6 @@
+alertmanager_version: "0.24.0"  # Alertmanager version
+alertmanager_config_path: "/etc/alertmanager/alertmanager.yml"
+alertmanager_service_file: "/etc/systemd/system/alertmanager.service"
+alertmanager_bin: "/usr/local/bin/alertmanager"
+slack_webhook_url: "https://hooks.slack.com/services/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"
+
