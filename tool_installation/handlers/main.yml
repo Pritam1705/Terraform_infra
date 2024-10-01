@@ -1,6 +1,5 @@
 ---
-- name: restart grafana
+- name: restart grafana service
   service:
-    name: grafana-server
+    name: "{{ grafana_service_name }}"
     state: restarted
-    enabled: yes
