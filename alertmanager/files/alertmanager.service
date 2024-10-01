@@ -1,0 +1,11 @@
+[Unit]
+Description=Alertmanager
+After=network.target
+
+[Service]
+User=root
+ExecStart={{ alertmanager_bin }} --config.file={{ alertmanager_config_path }}
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
