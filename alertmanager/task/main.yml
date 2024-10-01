@@ -1,0 +1,33 @@
+---
+- name: Install Alertmanager
+  get_url:
+    url: "https://github.com/prometheus/alertmanager/releases/download/v{{ alertmanager_version }}/alertmanager-{{ alertmanager_version }}-linux-amd64.tar.gz"
+    dest: "/tmp/alertmanager.tar.gz"
+
+- name: Extract Alertmanager
+  unarchive:
+    src: "/tmp/alertmanager.tar.gz"
+    dest: "/usr/local/bin/"
+    remote_src: yes
+
+- name: Create configuration directory
+  file:
+    path: "/etc/alertmanager"
+    state: directory
+
+- name: Deploy Alertmanager configuration
+  template:
+    src: "alertmanager.yml.j2"
+    dest: "{{ alertmanager_config_path }}"
+
+- name: Copy Alertmanager service file
+  copy:
+    src: "alertmanager.service"
+    dest: "{{ alertmanager_service_file }}"
+    mode: '0644'
+
+- name: Start and enable Alertmanager service
+  systemd:
+    name: alertmanager
+    enabled: yes
+    state: started
