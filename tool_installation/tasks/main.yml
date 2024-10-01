@@ -1,46 +1,38 @@
 ---
-- name: apt-key add
+# tasks file for install_grafana
+
+- name: Install required packages
+  package:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - apt-transport-https
+    - software-properties-common
+    - wget
+
+- name: Add Grafana GPG key
   apt_key:
-    url: "{{ key }}"
+    url: https://apt.grafana.com/gpg.key
     state: present
-  when: ansible_os_family == "Debian"
 
-- name: clone apt repository
+- name: Add Grafana APT repository
   apt_repository:
-    repo: "{{ repo }}"
+    repo: "deb https://apt.grafana.com stable main"
     state: present
-  when: ansible_os_family == "Debian"
 
-- name: install grafana in ubuntu
+- name: Update apt cache
   apt:
-    update_cache: true
-    name: grafana
-    state: present
-  when: ansible_os_family == "Debian"
+    update_cache: yes
 
-- name: clone yum repository
-  yum_repository:
-    name: grafana
-    baseurl: "{{ baseurl }}"
-    repo_gpgcheck: yes
-    enabled: yes
-    gpgcheck: yes
-    gpgkey: "{{ gpgkey }}"
-    sslverify: yes
-    sslcacert: /etc/pki/tls/certs/ca-bundle.crt
-  when: ansible_os_family == "RedHat"
- 
-- name: install grafana in centos
-  yum:
+- name: Install Grafana package
+  package:
     name: grafana
     state: present
-  when: ansible_os_family == "RedHat"
- 
-- name: generating cfg file
-  template:
-    src: myconfig.j2
-    dest: /etc/grafana/grafana.ini
-  notify: restart grafana
-  when: ansible_os_family in ["Debian", "RedHat"] 
+
+- name: Start Grafana service
+  service:
+    name: grafana-server
+    state: started
+    enabled: yes
 
 
