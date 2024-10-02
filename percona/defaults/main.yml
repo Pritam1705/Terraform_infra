@@ -1,0 +1,7 @@
+---
+# defaults file for percona
+mongodb_exporter_version: "0.34.0"
+mongodb_exporter_download_url: "https://github.com/percona/mongodb_exporter/releases/download/v{{ mongodb_exporter_version }}/mongodb_exporter-{{ mongodb_exporter_version }}.linux-amd64.tar.gz"
+mongodb_exporter_binary_path: "/usr/local/bin/mongodb_exporter"
+mongodb_exporter_service_path: "/etc/systemd/system/mongodb_exporter.service"
+mongodb_uri: "mongodb://myuser:mypassword@localhost:27017"
