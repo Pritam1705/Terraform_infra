@@ -1,0 +1,10 @@
+[Unit]
+Description=MongoDB Exporter
+After=network.target
+
+[Service]
+ExecStart={{ mongodb_exporter_binary_path }} --mongodb.uri={{ mongodb_uri }}
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
