@@ -1,0 +1,13 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: terraform-infra
+  description: Terraform code for infrastructure provisioning
+  tags:
+    - terraform
+    - infrastructure
+spec:
+  type: resource
+  lifecycle: production
+  owner: devops-team
+  system: infra-platform
