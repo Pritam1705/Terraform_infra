@@ -5,3 +5,7 @@ metadata:
   description: An example of a Backstage application.
   annotations:
     'jenkins.io/job-full-name': test/testing
+spec:
+  type: service
+  lifecycle: production
+  owner: user:default/pritam
