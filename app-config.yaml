@@ -1,0 +1,78 @@
+app:
+  title: Scaffolded Backstage App
+  baseUrl: http://192.168.10.162:3000
+
+organization:
+  name: My Company
+
+backend:
+  baseUrl: http://192.168.10.162:7007
+  listen:
+    port: 7007
+  csp:
+    connect-src: ["'self'", 'http:', 'https:']
+  cors:
+    origin: http://192.168.10.162:3000
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
+
+integrations:
+  github:
+    - host: github.com
+      token: ${GITHUB_TOKEN}
+
+proxy:
+  # Example placeholder (can be extended as needed)
+  # endpoints:
+  #   '/test':
+  #     target: 'https://example.com'
+  #     changeOrigin: true
+
+techdocs:
+  builder: 'local'
+  generator:
+    runIn: 'docker'
+  publisher:
+    type: 'local'
+
+auth:
+  providers:
+    guest: {}
+
+scaffolder:
+  # Software template config (extend when needed)
+
+catalog:
+  import:
+    entityFilename: catalog-info.yaml
+    pullRequestBranchName: backstage-integration
+  rules:
+    - allow: [Component, System, API, Resource, Location]
+  locations:
+    - type: file
+      target: ../../examples/entities.yaml
+    - type: file
+      target: ../../examples/template/template.yaml
+      rules:
+        - allow: [Template]
+    - type: file
+      target: ../../examples/org.yaml
+      rules:
+        - allow: [User, Group]
+  useUrlReadersSearch: true
+
+kubernetes:
+  # Kubernetes plugin config placeholder
+
+permission:
+  enabled: true
+
+# ✅ Jenkins backend plugin configuration
+jenkins:
+  baseUrl: http://3.110.194.101:8080/
+  username: admin
+  projectCountLimit: 100
+  apiKey: 11ef5527b69ed50b5146fb4606e8315ef2
